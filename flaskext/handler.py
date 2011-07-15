@@ -23,7 +23,7 @@ class BaseHandler(object):
 
        >>> from flaskext.handler import BaseHandler
        >>> class Hello(BaseHandler):
-       ...     RULE = '/'
+       ...     ROUTE = '/'
        ...
        ...     def get(self):
        ...         return 'hello world'
@@ -38,7 +38,7 @@ class BaseHandler(object):
        >>> from werkzeug.exceptions import NotFound
        >>> # handler definition
        >>> class AuthenticatedUser(BaseHandler):
-       ...     RULE = '/me'
+       ...     ROUTE = '/me'
        ...     TEMPLATE_NAME = 'profile'
        ...
        ...     def validate_get_request(self, req): # called first
@@ -64,7 +64,7 @@ class BaseHandler(object):
     .. sourcecode:: pycon
 
        >>> class SignedUserFriends(SignedUser):
-       ...     RULE = '/me/friends'
+       ...     ROUTE = '/me/friends'
        ...
        ...     def get(self, user):
        ...         return dict(user=user, friends=user.friends)
@@ -74,8 +74,8 @@ class BaseHandler(object):
     .. seealso:: :meth:`BaseHandler.__call__`
 
     """
-    #: The RULE this handler should bind to.
-    RULE = None
+    #: The route this handler should bind to.
+    ROUTE = None
 
     #: The name of the template
     TEMPLATE_NAME = None
@@ -91,9 +91,9 @@ class BaseHandler(object):
     CUSTOM_RENDERER = {"json": flask.jsonify}
 
     def __init__(self):
-        if self.RULE is None:
+        if self.ROUTE is None:
             raise NotImplementedError("A BaseHandler implementation must "
-                                      "include self.RULE")
+                                      "include self.ROUTE")
         # do this inside a metaclass?
         self.METHODS = [meth for meth in POSSIBLE_METHODS if
                         hasattr(self, meth.lower())]
@@ -168,7 +168,7 @@ class BaseHandler(object):
 def add_handler(app, *handlers):
     for handler_cls in handlers:
         handler = handler_cls()
-        app.add_url_rule(handler.RULE,
+        app.add_url_rule(handler.ROUTE,
                          handler.__class__.__name__,
                          handler,
                          methods=handler.METHODS)
