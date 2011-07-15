@@ -18,7 +18,7 @@ from setuptools import setup
 setup(
     name='Flask-Handler',
     version='0.1',
-    url='http://github.com/kijun/flask-handler'
+    url='http://github.com/kijun/flask-handler',
     license='BSD',
     author='Kijun Seo',
     author_email='m@kijun.co',
