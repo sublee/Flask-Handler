@@ -10,7 +10,7 @@ POSSIBLE_METHODS = "GET", "POST", "PUT", "DELETE", "HEAD"
 
 def _jinja_renderer(path):
     def render_from_dict(context_dict):
-        return render_template(path, **context_dict)
+        return flask.render_template(path)#, **context_dict)
     return render_from_dict
 
 
@@ -122,15 +122,17 @@ class BaseHandler(object):
             validator = getattr(self, "validate_%s_request" % verb, None)
             method = getattr(self, verb)
 
-            if callable(validator):
+            if validator:
                 params = validator(flask.request, **kwargs)
             else:
                 params = kwargs
 
             if isinstance(params, (list, tuple)):
                 context = method(*params)
+            elif isinstance(params, dict):
+                context = method(**params)
             else:
-                context = method(params)
+                context = method(param)
 
             if renderer:
                 return renderer(context)
@@ -151,7 +153,7 @@ class BaseHandler(object):
         if format in self.CUSTOM_RENDERER:
             return self.CUSTOM_RENDERER[format]
         if self.TEMPLATE_NAME:
-            return _jinja_renderer(self.TEMPLATE_NAME + format)
+            return _jinja_renderer('%s.%s' % (self.TEMPLATE_NAME, format))
         return None
 
     def _resolve_rest_verb(self):
