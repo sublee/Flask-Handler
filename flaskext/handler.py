@@ -10,7 +10,7 @@ POSSIBLE_METHODS = "GET", "POST", "PUT", "DELETE", "HEAD"
 
 def _jinja_renderer(path):
     def render_from_dict(context_dict):
-        return flask.render_template(path)#, **context_dict)
+        return flask.render_template(path, **context_dict)
     return render_from_dict
 
 
