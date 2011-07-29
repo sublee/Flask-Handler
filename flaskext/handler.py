@@ -134,7 +134,7 @@ class BaseHandler(object):
             else:
                 context = method(params)
 
-            if renderer:
+            if isinstance(context, dict) and renderer:
                 return renderer(context)
             return context
 
